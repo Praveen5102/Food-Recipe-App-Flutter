@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:intro/View/Introduction.dart';
+import 'package:get/get.dart';
+import 'view/Introduction.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:intro/Utils/Widgets/theme_controller.dart';
 
-void main() {
-  runApp(const MyApp());
+
+void main() async {
+  await GetStorage.init();
+  final themeController = Get.put(ThemeController());  // Initialize ThemeController
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const Introduction()
-    );
+    final ThemeController themeController = Get.find();
+    return Obx(() {
+      return GetMaterialApp(
+        title: 'Recipe App',
+        theme: ThemeData.light(),  // Light theme
+        darkTheme: ThemeData.dark(),  // Dark theme
+        themeMode: themeController.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        home: Introduction(),
+      );
+    });
   }
 }
